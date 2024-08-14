@@ -1,0 +1,43 @@
+plugins {
+    id 'java'
+    id 'java-library'
+    id 'idea'
+}
+
+group = 'dev.pinter'
+version = '0.5'
+
+repositories {
+    mavenCentral()
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_21
+}
+
+ext {
+    ghidraDir = "../ghidra/Ghidra"
+    // scripts are copied after build
+    scriptsDir = "../ghidra/scripts"
+}
+
+dependencies {
+    implementation fileTree(dir: ghidraDir + '/Framework/', include: ['**/*.jar'])
+    implementation fileTree(dir: ghidraDir + '/Features/', include: ['**/*.jar'])
+    implementation fileTree(dir: ghidraDir + '/Debug/', include: ['**/*.jar'])
+    implementation fileTree(dir: ghidraDir + '/Processors/', include: ['**/*.jar'])
+}
+
+tasks.register("CopyScript") {
+    dependsOn build
+    if(file(scriptsDir).isDirectory()) {
+        copy {
+            println("copying scripts")
+            from("src/main/java/") {
+                include "*.java"
+            }
+            into file(scriptsDir)
+        }
+    }
+}
+tasks.named("CopyScript").get().mustRunAfter("build")
