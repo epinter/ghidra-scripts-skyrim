@@ -12,7 +12,7 @@ import ghidra.program.model.symbol.*;
 import java.util.Iterator;
 
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
-public class SkyrimPinVtableFunctions extends GhidraScript {
+public class SkyrimLabelVtableFunctions extends GhidraScript {
     private static final boolean DEBUG = false;
     //when true, label is set on function, when false label is set on pointer
     private static final boolean LABEL_TO_FUNC = false;
@@ -56,7 +56,6 @@ public class SkyrimPinVtableFunctions extends GhidraScript {
                             //pointer, labelStr, parentClass, false, SourceType.IMPORTED);
                             if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()) {
                                 Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
-                                label.setPinned(true);
                             } else {
                                 logDebug("symbol '%s' already exists (%s)", labelStr, parentClass.getName());
                             }
