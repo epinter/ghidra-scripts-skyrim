@@ -28,7 +28,6 @@ public class SkyrimPinVtableFunctions extends GhidraScript {
             }
         }
 
-        int count = 0;
         while (relocations.hasNext()) {
             Relocation r = relocations.next();
             for (var s : currentProgram.getSymbolTable().getSymbols(r.getAddress())) {
@@ -55,8 +54,12 @@ public class SkyrimPinVtableFunctions extends GhidraScript {
 //                            }
                             String labelStr = symVf.getName();
                             //pointer, labelStr, parentClass, false, SourceType.IMPORTED);
-                            Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
-                            label.setPinned(true);
+                            if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()) {
+                                Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
+                                label.setPinned(true);
+                            } else {
+                                logDebug("symbol '%s' already exists (%s)", labelStr, parentClass.getName());
+                            }
                         }
                     }
                 }
