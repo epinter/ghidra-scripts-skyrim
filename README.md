@@ -1,1 +1,1 @@
-##*** Ghidra Scripts for Skyrim ***
+# ***Ghidra Scripts for Skyrim***

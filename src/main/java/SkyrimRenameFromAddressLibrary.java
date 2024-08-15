@@ -58,7 +58,7 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
             }
             readIdaScript(file);
         } else {
-            File renameFile = askFile(String.format("Select skyrimae.rename file"), "OK");
+            File renameFile = askFile("Select skyrimae.rename file", "OK");
             if (!renameFile.exists() || renameFile.isDirectory()) {
                 System.err.println(".rename file not found");
                 return;
@@ -124,12 +124,14 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                             Symbol s = classNames.next();
                             if (s.getSymbolType().equals(SymbolType.CLASS) && s.getName().equals(names[0])) {
                                 metricClassMatch++;
-                                logDebug("class found " + names[0] + " creating label for address " + symbol.getAddress() + " namespace " + currentProgram.getGlobalNamespace() + " " + ent.getValue());
+                                logDebug("class found " + names[0] + " creating label for address " + symbol.getAddress()
+                                        + " namespace " + currentProgram.getGlobalNamespace() + " " + ent.getValue());
                                 Namespace currentNamespace = symbolTable.getNamespace(names[0], currentProgram.getGlobalNamespace());
                                 Symbol label;
                                 if (currentNamespace == null) {
                                     logDebug("creating namespace '%s'", names[0]);
-                                    currentNamespace = symbolTable.createNameSpace(currentProgram.getGlobalNamespace(), names[0], SourceType.IMPORTED);
+                                    currentNamespace = symbolTable.createNameSpace(
+                                            currentProgram.getGlobalNamespace(), names[0], SourceType.IMPORTED);
                                     metricNsCreated++;
                                 }
                                 label = createLabel(symbol.getAddress(), names[1], currentNamespace, true, SourceType.IMPORTED);
