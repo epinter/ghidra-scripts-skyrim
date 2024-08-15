@@ -31,7 +31,7 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
         while (relocations.hasNext()) {
             Relocation r = relocations.next();
             for (var s : currentProgram.getSymbolTable().getSymbols(r.getAddress())) {
-                if (s.getName().equals("vftable")) {
+                if (s.getName().equals("vftable") || s.getName().startsWith("vftable_")) {
                     Data data = getDataAt(s.getAddress());
                     Symbol symbol = getSymbolAt(data.getAddress());
                     Namespace parentClass = null;

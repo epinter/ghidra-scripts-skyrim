@@ -32,6 +32,8 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
     private static final long BASE = 0x140000000L;
     private static final boolean DEBUG = false;
     private static final boolean IDASCRIPT_MODE = false;
+    //overwrite vfunctions found by Ghidra RecoverClassesFromRTTIScript
+    private static final boolean OVERWRITE_VFUNC_RTTI = true;
     private final HashMap<Long, String> symbolList = new HashMap<>();
 
     @Override
@@ -114,7 +116,7 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                     continue;
                 }
                 metricFunFound++;
-                if (function.getName().startsWith("FUN_")) {
+                if (function.getName().startsWith("FUN_") || (function.getName().startsWith("vfunction") && OVERWRITE_VFUNC_RTTI)) {
                     function.setName(ent.getValue(), SourceType.IMPORTED);
                     metricFunNameSet++;
                     String[] names = ent.getValue().split("::");
