@@ -4,6 +4,7 @@
 
 import ghidra.app.script.GhidraScript;
 import ghidra.program.model.address.Address;
+import ghidra.program.model.data.Structure;
 import ghidra.program.model.listing.Data;
 import ghidra.program.model.listing.Function;
 import ghidra.program.model.reloc.Relocation;
@@ -16,6 +17,7 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
     private static final boolean DEBUG = false;
     //when true, label is set on function, when false label is set on pointer
     private static final boolean LABEL_TO_FUNC = false;
+    private static final boolean COMMENT_STRUCTURE = true;
 
     @Override
     protected void run() throws Exception {
@@ -49,9 +51,15 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
                                 labelStr = symVf.getName();
                             } else if (data.isStructure()) {
                                 labelStr = f.getName();
+                                if (COMMENT_STRUCTURE) {
+                                    Structure structure = (Structure) data.getDataType();
+                                    structure.getComponent(i).setComment(String.format("%s::%s", f.getParentNamespace().getName(), f.getName()));
+                                    logDebug("%s %s %s", data.getDataType().getName(), data.getDataType().getDataTypePath(), structure.getComponent(i).getFieldName());
+                                }
                             }
 
-                            if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()) {
+                            if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()
+                                    && currentProgram.getSymbolTable().getSymbols(f.getName(), parentClass).isEmpty()) {
                                 Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
                             } else {
                                 logDebug("symbol '%s' already exists (%s)", labelStr, parentClass.getName());
