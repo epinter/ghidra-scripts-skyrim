@@ -29,12 +29,16 @@ import java.util.regex.Pattern;
 
 @SuppressWarnings({"unused", "SpellCheckingInspection"})
 public class SkyrimRenameFromAddressLibrary extends GhidraScript {
+    private final HashMap<Long, String> symbolList = new HashMap<>();
     private static final long BASE = 0x140000000L;
     private static final boolean DEBUG = false;
     private static final boolean IDASCRIPT_MODE = false;
+
     //overwrite vfunctions found by Ghidra RecoverClassesFromRTTIScript
     private static final boolean OVERWRITE_VFUNC_RTTI = true;
-    private final HashMap<Long, String> symbolList = new HashMap<>();
+
+    //when false functions are renamed and namespace will be set, when true additional label is created and function nams is set using namespace
+    private static final boolean CREATE_LABEL = false;
 
     @Override
     protected void run() throws Exception {
@@ -117,8 +121,6 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                 }
                 metricFunFound++;
                 if (function.getName().startsWith("FUN_") || (function.getName().startsWith("vfunction") && OVERWRITE_VFUNC_RTTI)) {
-                    function.setName(ent.getValue(), SourceType.IMPORTED);
-                    metricFunNameSet++;
                     String[] names = ent.getValue().split("::");
                     if (names.length == 2) {
                         Iterator<Symbol> classNames = symbolTable.getSymbols(names[0]);
@@ -136,14 +138,25 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                                             currentProgram.getGlobalNamespace(), names[0], SourceType.IMPORTED);
                                     metricNsCreated++;
                                 }
-                                label = createLabel(symbol.getAddress(), names[1], currentNamespace, true, SourceType.IMPORTED);
-                                metricFunLblCreated++;
-                                if (!label.isPrimary()) {
-                                    logError("label for address %s not set as primary", address);
+
+                                if (CREATE_LABEL) {
+                                    function.setName(ent.getValue(), SourceType.IMPORTED);
+                                    label = createLabel(symbol.getAddress(), names[1], currentNamespace, true, SourceType.IMPORTED);
+                                    metricFunLblCreated++;
+                                    if (!label.isPrimary()) {
+                                        logError("label for address %s not set as primary", address);
+                                    }
+                                } else {
+                                    function.setParentNamespace(currentNamespace);
+                                    function.setName(names[1], SourceType.IMPORTED);
                                 }
                             }
                         }
+                    } else {
+                        function.setName(ent.getValue(), SourceType.IMPORTED);
                     }
+                    metricFunNameSet++;
+
                 }
             } else if (symbol.getSymbolType().equals(SymbolType.LABEL)) {
                 monitor.setMessage("Processing LABEL " + address);
