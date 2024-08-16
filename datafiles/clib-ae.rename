@@ -19,7 +19,7 @@
 12141 CRC32Calculator::SizeOf32_*
 12315 ExtraDataList::Add_*
 12326 UserEvents::CreateRefHandle_*
-12332 UserEvents::LookupReferenceByHandle_*
+12332 BSPointerHandleManagerInterface::GetSmartPointer_*
 12399 REFR_LOCK::GetLockLevel_*
 12768 ExtraTextDisplayData::GetDisplayName_*
 13299 TES::PurgeBufferedCells_*
@@ -173,7 +173,7 @@
 29924 TESConditionItem::IsTrue_*
 30154 ClearEffectForWeapon_*
 32217 TESWaterSystem::AddRipple_*
-32359 BGSStoryEventManager::AddEvent_*
+32359 BGSStoryEventManager::AddEvent_Impl_*
 32485 BGSStoryTeller::BeginStartUpQuest_*
 32486 BGSStoryTeller::BeginShutDownQuest_*
 32884 IAnimationGraphManagerHolder::GetGraphVariableNiPoint3_*
@@ -321,7 +321,7 @@
 40319 LevelIncrease::GetEventSource_*
 40320 SkillIncrease::GetEventSource_*
 40437 PlayerCharacter::CenterOnCell_Impl_*
-40456 PlayerSkills::PlayPickupEvent_*
+40456 PlayerCharacter::AddPlayerAddItemEvent_*
 40484 PlayerCharacter::CheckCast_*
 40488 PlayerCharacter::AddSkillExperience_*
 40548 PlayerSkills::ActivatePickRef_*
@@ -472,9 +472,9 @@
 70824 NiTimeController::ComputeScaledTime_*
 70826 NiTimeController::ProcessClone_*
 70948 BSDynamicTriShape::ctor_*
-71014 BSResourceNiBinaryStream::Ctor_*
-71016 BSResourceNiBinaryStream::Dtor_*
-71018 BSResourceNiBinaryStream::Seek_*
+71014 BSResourceNiBinaryStream::ctor_*
+71016 BSResourceNiBinaryStream::dtor_*
+71018 BSResourceNiBinaryStream::seek_*
 71021 BSResourceNiBinaryStream::SetEndianSwap_*
 71227 NiSkinInstance::Ctor_*
 72439 NiControllerSequence::SetPhase_*
@@ -576,6 +576,14 @@
 109278 BSWin32SaveDataSystemUtility::GetSingleton_*
 109689 RTDynamicCast_*
 242366 GASActionBufferData::Vtbl_*
+242413 GASDoAction::Vtbl_*
+242414 GASDoInitAction::Vtbl_*
+242592 GFxPlaceObject2::Vtbl_*
+242593 GFxPlaceObject3::Vtbl_*
+244863 GFxRemoveObject::Vtbl_*
+244864 GFxRemoveObject2::Vtbl_*
+244865 GFxSetBackgroundColor::Vtbl_*
+244866 GFxInitImportActions::Vtbl_*
 361120 SCRIPT_FUNCTION::FirstScriptCommand_*
 365650 SCRIPT_FUNCTION::FirstConsoleCommand_*
 400269 TESDataHandler::Singleton_*

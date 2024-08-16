@@ -19,7 +19,7 @@
 11913 ExtraDataList::HasQuestObjectAlias_*
 12176 ExtraDataList::Add_*
 12193 UserEvents::CreateRefHandle_*
-12204 UserEvents::LookupReferenceByHandle_*
+12204 BSPointerHandleManagerInterface::GetSmartPointer_*
 12272 REFR_LOCK::GetLockLevel_*
 12626 ExtraTextDisplayData::GetDisplayName_*
 12784 bhkCollisionObject::GetRigidBody_*
@@ -175,7 +175,7 @@
 29090 TESConditionItem::IsTrue_*
 29303 ClearEffectForWeapon_*
 31410 TESWaterSystem::AddRipple_*
-31576 BGSStoryEventManager::AddEvent_*
+31576 BGSStoryEventManager::AddEvent_Impl_*
 31717 BGSStoryTeller::BeginStartUpQuest_*
 31718 BGSStoryTeller::BeginShutDownQuest_*
 32141 IAnimationGraphManagerHolder::SetGraphVariableBool_*
@@ -323,7 +323,7 @@
 39247 LevelIncrease::GetEventSource_*
 39248 SkillIncrease::GetEventSource_*
 39365 PlayerCharacter::CenterOnCell_Impl_*
-39384 PlayerSkills::PlayPickupEvent_*
+39384 PlayerCharacter::AddPlayerAddItemEvent_*
 39409 PlayerCharacter::CheckCast_*
 39413 PlayerCharacter::AddSkillExperience_*
 39471 PlayerSkills::ActivatePickRef_*
@@ -473,9 +473,9 @@
 69447 NiTimeController::ComputeScaledTime_*
 69449 NiTimeController::ProcessClone_*
 69564 BSDynamicTriShape::ctor_*
-69636 BSResourceNiBinaryStream::Ctor_*
-69638 BSResourceNiBinaryStream::Dtor_*
-69640 BSResourceNiBinaryStream::Seek_*
+69636 BSResourceNiBinaryStream::ctor_*
+69638 BSResourceNiBinaryStream::dtor_*
+69640 BSResourceNiBinaryStream::seek_*
 69643 BSResourceNiBinaryStream::SetEndianSwap_*
 69804 NiSkinInstance::Ctor_*
 70860 NiControllerSequence::SetPhase_*
