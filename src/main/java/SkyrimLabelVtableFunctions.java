@@ -31,29 +31,26 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
         while (relocations.hasNext()) {
             Relocation r = relocations.next();
             for (var s : currentProgram.getSymbolTable().getSymbols(r.getAddress())) {
-                if (s.getName().equals("vftable") || s.getName().startsWith("vftable_")) {
+                if (s.getName().equals("vftable") || s.getName().startsWith("vftable_for")) {
                     Data data = getDataAt(s.getAddress());
                     Symbol symbol = getSymbolAt(data.getAddress());
                     Namespace parentClass = null;
-                    if (symbol.getParentNamespace() != null && !symbol.getParentNamespace().isGlobal() && data.isArray()) {
+                    if (symbol.getParentNamespace() != null && !symbol.getParentNamespace().isGlobal() && (data.isArray() || data.isStructure())) {
                         parentClass = symbol.getParentNamespace();
-                        logDebug("%s %s%n", r.getAddress(), parentClass);
+
                         for (int i = 0; i < data.getNumComponents(); i++) {
                             Address pointer = data.getComponent(i).getAddress();
                             Address vfAddr = (Address) data.getComponent(i).getValue();
                             Symbol symVf = getSymbolAt(vfAddr);
                             Function f = getFunctionAt(vfAddr);
 
-                            logDebug("\t\t%s %s %s %n", data.getComponent(i).getValue(), symVf.getName(), f.getName());
+                            String labelStr = null;
+                            if (data.isArray()) {
+                                labelStr = symVf.getName();
+                            } else if (data.isStructure()) {
+                                labelStr = f.getName();
+                            }
 
-//                            String labelStr;
-//                            if (symVf.getParentNamespace().getName().equals(currentProgram.getGlobalNamespace().getName())) {
-//                                labelStr = symVf.getName();
-//                            } else {
-//                                labelStr = String.format("%s::%s", symVf.getParentNamespace().getName(), symVf.getName());
-//                            }
-                            String labelStr = symVf.getName();
-                            //pointer, labelStr, parentClass, false, SourceType.IMPORTED);
                             if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()) {
                                 Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
                             } else {
@@ -67,15 +64,25 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
     }
 
     private void logError(String format, Object... args) {
-        printerr(String.format(format, args));
+        if (args.length > 0) {
+            printerr(String.format(format, args));
+        } else {
+            printerr(format);
+        }
+
     }
 
     private void logInfo(String format, Object... args) {
-        println(String.format(format, args));
+        if (args.length > 0) {
+            println(String.format(format, args));
+        } else {
+            println(format);
+        }
     }
 
     private void logDebug(String format, Object... args) {
-        if (DEBUG)
-            printerr(String.format(format, args));
+        if (!DEBUG)
+            return;
+        logError(format, args);
     }
 }
