@@ -37,7 +37,8 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
                     Data data = getDataAt(s.getAddress());
                     Symbol symbol = getSymbolAt(data.getAddress());
                     Namespace parentClass = null;
-                    if (symbol.getParentNamespace() != null && !symbol.getParentNamespace().isGlobal() && (data.isArray() || data.isStructure())) {
+                    if (symbol.getParentNamespace() != null && !symbol.getParentNamespace().isGlobal()
+                            && (data.isArray() || data.isStructure())) {
                         parentClass = symbol.getParentNamespace();
 
                         for (int i = 0; i < data.getNumComponents(); i++) {
@@ -53,14 +54,17 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
                                 labelStr = f.getName();
                                 if (COMMENT_STRUCTURE) {
                                     Structure structure = (Structure) data.getDataType();
-                                    structure.getComponent(i).setComment(String.format("%s::%s", f.getParentNamespace().getName(), f.getName()));
-                                    logDebug("%s %s %s", data.getDataType().getName(), data.getDataType().getDataTypePath(), structure.getComponent(i).getFieldName());
+                                    structure.getComponent(i).setComment(
+                                            String.format("%s::%s", f.getParentNamespace().getName(), f.getName()));
+                                    logDebug("%s %s %s", data.getDataType().getName(),
+                                            data.getDataType().getDataTypePath(), structure.getComponent(i).getFieldName());
                                 }
                             }
 
                             if (currentProgram.getSymbolTable().getSymbols(labelStr, parentClass).isEmpty()
                                     && currentProgram.getSymbolTable().getSymbols(f.getName(), parentClass).isEmpty()) {
-                                Symbol label = currentProgram.getSymbolTable().createLabel(LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
+                                Symbol label = currentProgram.getSymbolTable().createLabel(
+                                        LABEL_TO_FUNC ? symVf.getAddress() : pointer, labelStr, parentClass, SourceType.IMPORTED);
                             } else {
                                 logDebug("symbol '%s' already exists (%s)", labelStr, parentClass.getName());
                             }
@@ -77,7 +81,6 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
         } else {
             printerr(format);
         }
-
     }
 
     private void logInfo(String format, Object... args) {
