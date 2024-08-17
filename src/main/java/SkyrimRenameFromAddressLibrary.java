@@ -123,6 +123,11 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                 if (function.getName().startsWith("FUN_") || (function.getName().startsWith("vfunction") && OVERWRITE_VFUNC_RTTI)) {
                     String[] names = ent.getValue().split("::");
                     if (names.length == 2) {
+                        if (currentProgram.getSymbolTable().getSymbols(names[0], currentProgram.getGlobalNamespace()).isEmpty()) {
+                            symbolTable.createClass(currentProgram.getGlobalNamespace(), names[0], SourceType.IMPORTED);
+                        }
+                        Namespace currentNamespace = symbolTable.getNamespace(names[0], currentProgram.getGlobalNamespace());
+
                         Iterator<Symbol> classNames = symbolTable.getSymbols(names[0]);
                         while (classNames.hasNext()) {
                             Symbol s = classNames.next();
@@ -130,18 +135,9 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
                                 metricClassMatch++;
                                 logDebug("class found " + names[0] + " creating label for address " + symbol.getAddress()
                                         + " namespace " + currentProgram.getGlobalNamespace() + " " + ent.getValue());
-                                Namespace currentNamespace = symbolTable.getNamespace(names[0], currentProgram.getGlobalNamespace());
-                                Symbol label;
-                                if (currentNamespace == null) {
-                                    logDebug("creating namespace '%s'", names[0]);
-                                    currentNamespace = symbolTable.createNameSpace(
-                                            currentProgram.getGlobalNamespace(), names[0], SourceType.IMPORTED);
-                                    metricNsCreated++;
-                                }
-
                                 if (CREATE_LABEL) {
                                     function.setName(ent.getValue(), SourceType.IMPORTED);
-                                    label = createLabel(symbol.getAddress(), names[1], currentNamespace, true, SourceType.IMPORTED);
+                                    Symbol label = createLabel(symbol.getAddress(), names[1], currentNamespace, true, SourceType.IMPORTED);
                                     metricFunLblCreated++;
                                     if (!label.isPrimary()) {
                                         logError("label for address %s not set as primary", address);
@@ -200,16 +196,25 @@ public class SkyrimRenameFromAddressLibrary extends GhidraScript {
     }
 
     private void logError(String format, Object... args) {
-        printerr(String.format(format, args));
+        if (args.length > 0) {
+            printerr(String.format(format, args));
+        } else {
+            printerr(format);
+        }
     }
 
     private void logInfo(String format, Object... args) {
-        println(String.format(format, args));
+        if (args.length > 0) {
+            println(String.format(format, args));
+        } else {
+            println(format);
+        }
     }
 
     private void logDebug(String format, Object... args) {
-        if (DEBUG)
-            printerr(String.format(format, args));
+        if (!DEBUG)
+            return;
+        logError(format, args);
     }
 
     private void readIdaScript(File file) throws IOException {
