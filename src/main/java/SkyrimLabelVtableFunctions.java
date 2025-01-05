@@ -36,6 +36,7 @@ public class SkyrimLabelVtableFunctions extends GhidraScript {
                 if (s.getName().equals("vftable") || s.getName().startsWith("vftable_for")) {
                     Data data = getDataAt(s.getAddress());
                     if(data == null) {
+                        logError("unable to retrieve data from vtable: '%s' (%s)", s.getName(), s.getSymbolType());
                         continue;
                     }
                     Symbol symbol = getSymbolAt(data.getAddress());
